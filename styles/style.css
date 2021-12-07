@@ -22,3 +22,7 @@ h1 {
 .person:hover {
   border: 2px solid #ffe81f;
 }
+
+.spinner-border {
+  color: #ffe81f;
+}
