@@ -1,34 +1,30 @@
-const results = document.querySelector('#results');
-
-async function asyncFetch(value) {
-    const res = await fetch(`https://swapi.dev/api/${value}/`);
-    const data = await res.json();
-    displayResults(data, value)
-}
-
-function displayResults(data, value) {
-    let output = "";
-    console.log(data);
-    if (value === 'people') {
-        data.results.forEach(item => {
-            output += `
-            <div class="card p-3 m-3" style="width: 16rem">
-                <h4 class="card-title text-center">${item.name}</h4>
-                <div class="card-content">
-                    <span>Birth Year</span>: ${item.birth_year}<br> 
-                    <span>Height</span>: ${item.height}<br>
-                    <span>Mass</span>: ${item.mass}<br>
-                    <span style="text-transform:capitalize">Eye Color</span>: ${item.eye_color}<br>
-                    <span>Number of Films</span>: ${item.films.length}<br>
-                </div>
-            </div>    
-            `
+function fetchData() {
+    fetch('https://swapi.dev/api/people/')
+        .then(res => {
+            if (!res.ok) {
+                throw Error('ERROR');
+            }
+            return res.json();
         })
-    }
-    results.innerHTML = output;
+        .then(data => {
+            console.log(data);
+            const html = data.results.map(person => {
+                return `<div class='person'>
+                            <h5>${person.name}</h5>
+                            <p>Birth Year: ${person.birth_year}</p>
+                            <p>Height: ${person.height}</p>
+                            <p>Mass: ${person.mass}</p>
+                            <p style="text-transform: capitalize;">Eye Color: ${person.eye_color}</p>
+                            <p>Film Count: ${person.films.length}</p>
+                        </div>
+                        `;
+            }).join('');
+            console.log(html)
+            document.querySelector('#app').insertAdjacentHTML('afterbegin', html);
+        })
+        .catch(error => {
+            console.log(error)
+        });
 }
 
-document.querySelector('#buttons').addEventListener('click', e => {
-    asyncFetch(e.target.textContent.trim().toLowerCase());
-})
-
+fetchData();
